@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  padding: 0.5em 1em;
+  background-color: var(--bg-menu);
+
+  a[href].active {
+    color: var(--c-link-active);
+  }
+}
