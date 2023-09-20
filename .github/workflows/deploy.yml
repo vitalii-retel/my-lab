@@ -33,6 +33,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: docs
+          path: docs
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
