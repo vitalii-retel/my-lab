@@ -21,8 +21,21 @@ jobs:
           name: docs
           path: docs
           retention-days: 1
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - run: echo "Deploy test"
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - run: rm -r docs/*
+      - uses: actions/download-artifact@v3
+        with:
+          name: docs
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Auto deploy"
+          git push
