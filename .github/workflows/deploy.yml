@@ -35,7 +35,7 @@ jobs:
           path: docs
       - name: Commit if there are changes
         run: |
-          if [[$(git status -s)]]; then
+          if [[ $(git status -s) ]]; then
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
