@@ -107,6 +107,39 @@
           }
         }
       }
+    },
+    "tick-draw": {
+      "projectType": "library",
+      "root": "projects/tick-draw",
+      "sourceRoot": "projects/tick-draw/src",
+      "prefix": "tick",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/tick-draw/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/tick-draw/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/tick-draw/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/tick-draw/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }
