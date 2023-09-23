@@ -5,8 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build-libraries": "ng build tick-draw",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "build": "ng build lab",
+    "watch": "ng build lab --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
