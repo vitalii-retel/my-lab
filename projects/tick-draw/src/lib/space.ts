@@ -1,14 +1,21 @@
-import { DrawTheme } from './draw-theme';
+import { DrawTheme, Position } from './models';
 import { Obj } from './obj';
-import { Position } from './position';
+
+const MAX_TICK_DIRECT_CALLS = 25;
 
 export class Space {
-  private objs: Obj[] = [];
-  private objPositions = new WeakMap<Obj, Position>();
-  private objNextPositions = new WeakMap<Obj, Position>();
+  private readonly objs: Obj[] = [];
+  private readonly objPositions = new WeakMap<Obj, Position>();
+  private readonly objNextPositions = new WeakMap<Obj, Position>();
+  private readonly ticksIntervalMs = this.ticksInterval * 1000;
 
-  private drawTimeoutId: number | null = null;
-  private tickTimeoutId: number | null = null;
+  private state: 'stopped' | 'started' = 'stopped';
+  private startTime: number = Date.now();
+  private tickNextStartTime: number = Date.now();
+  private tickDirectCalls: number = 0;
+  private ctx!: CanvasRenderingContext2D;
+  private width!: number;
+  private height!: number;
 
   private theme: DrawTheme = {
     bgColor: '#ffffff',
@@ -16,10 +23,10 @@ export class Space {
   };
 
   constructor(
-    private canvasEl: HTMLCanvasElement,
-    private metersX: number,
-    private metersY: number,
-    private ticksInSecond: number
+    private readonly canvasEl: HTMLCanvasElement,
+    private readonly metersX: number,
+    private readonly metersY: number,
+    private readonly ticksInterval: number
   ) {}
 
   setTheme(theme: DrawTheme): void {
@@ -31,12 +38,59 @@ export class Space {
     this.objPositions.set(obj, { x: x, y: y });
   }
 
-  tick(): void {
+  start(): void {
+    const ctx = this.canvasEl.getContext('2d');
+    if (!ctx) throw new Error('Cannot draw!');
+
+    this.ctx = ctx;
+
+    this.canvasEl.width = 0;
+    this.canvasEl.height = 0;
+
+    this.width = this.canvasEl.clientWidth;
+    this.height = this.canvasEl.clientHeight;
+    // adjust canvas size
+    this.canvasEl.width = this.width;
+    this.canvasEl.height = this.height;
+
+    this.state = 'started';
+
+    this.startTime = Date.now();
+    this.tickNextStartTime = this.startTime;
+    this.tickDirectCalls = 0;
+    this.requestTick();
+
+    this.requestDraw();
+  }
+
+  stop(): void {
+    this.state = 'stopped';
+  }
+
+  private requestTick(): void {
+    if (this.state === 'stopped') return;
+
+    const now =
+      this.tickDirectCalls === MAX_TICK_DIRECT_CALLS
+        ? this.tickNextStartTime
+        : Date.now();
+
+    if (now > this.tickNextStartTime) {
+      this.tickDirectCalls++;
+      this.tick();
+      return;
+    }
+
+    this.tickDirectCalls = 0;
+    setTimeout(() => this.tick(), this.tickNextStartTime - now);
+  }
+
+  private tick(): void {
     // prepare
     this.objs.forEach((obj) => {
       const nextPosition = obj.calculateNextPosition({
         getObjPosition: getPosition.bind(null, this.objPositions),
-        ticksInSecond: this.ticksInSecond,
+        ticksInterval: this.ticksInterval,
         stop: this.stop.bind(this),
       });
       this.objNextPositions.set(obj, nextPosition);
@@ -45,63 +99,36 @@ export class Space {
     this.objs.forEach((obj) => {
       this.objPositions.set(obj, getPosition(this.objNextPositions, obj));
     });
-  }
 
-  start(): void {
-    this.requestDraw();
-    this.tickTimeoutId = window.setInterval(
-      () => this.tick(),
-      1000 / this.ticksInSecond
-    );
-  }
+    this.tickNextStartTime += this.ticksIntervalMs;
 
-  stop(): void {
-    if (this.drawTimeoutId) {
-      window.clearTimeout(this.drawTimeoutId);
-      this.drawTimeoutId = null;
-    }
-    if (this.tickTimeoutId) {
-      window.clearInterval(this.tickTimeoutId);
-      this.tickTimeoutId = null;
-    }
+    this.requestTick();
   }
 
   private requestDraw(): void {
-    this.drawTimeoutId = window.requestAnimationFrame(() => this.draw());
+    if (this.state === 'stopped') return;
+
+    requestAnimationFrame(() => this.draw());
   }
 
   private draw(): void {
-    const ctx = this.canvasEl.getContext('2d');
-    if (!ctx) throw new Error('Cannot draw!');
-
-    const width = this.canvasEl.clientWidth;
-    const height = this.canvasEl.clientHeight;
-
-    // adjust canvas size
-    this.canvasEl.width = width;
-    this.canvasEl.height = height;
-
     // clean
-    ctx.fillStyle = this.theme.bgColor;
-    ctx.fillRect(0, 0, width, height);
-
+    this.ctx.fillStyle = this.theme.bgColor;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    // draw
     this.objs.forEach((obj) =>
       obj.draw({
         getObjPosition: getPosition.bind(null, this.objPositions),
-        ctx: ctx,
-        scale: { x: width / this.metersX, y: height / this.metersY },
+        ctx: this.ctx,
+        scale: { x: this.width / this.metersX, y: this.height / this.metersY },
         theme: this.theme,
       })
     );
+
     this.requestDraw();
   }
 }
 
 function getPosition(map: WeakMap<Obj, Position>, obj: Obj): Position {
-  const position = map.get(obj);
-  if (!position)
-    throw new Error(
-      'Could not find position for the object. Check your implementations.'
-    );
-  return position;
+  return map.get(obj)!;
 }

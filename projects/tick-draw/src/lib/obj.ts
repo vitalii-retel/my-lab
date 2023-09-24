@@ -1,9 +1,8 @@
-import { DrawTheme } from './draw-theme';
-import { Position } from './position';
+import { DrawTheme, Position } from './models';
 
 export interface ObjCalculateNextPositionParameters {
   getObjPosition: (obj: Obj) => Position;
-  ticksInSecond: number;
+  ticksInterval: number;
   stop: () => void;
 }
 
