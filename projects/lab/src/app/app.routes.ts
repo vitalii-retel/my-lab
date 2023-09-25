@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [
+export const ROUTES: Routes = [
   {
     path: '',
     title: 'Lab',
@@ -13,10 +13,8 @@ export const routes: Routes = [
   {
     path: 'tick-draw',
     title: 'Tick draw',
-    loadComponent: () =>
-      import('./content/tick-draw/tick-draw.component').then(
-        (mod) => mod.TickDrawComponent
-      ),
+    loadChildren: () =>
+      import('./content/tick-draw/routes').then((mod) => mod.ROUTES),
   },
   {
     path: '**',

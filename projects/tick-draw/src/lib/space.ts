@@ -16,6 +16,8 @@ export class Space {
   private ctx!: CanvasRenderingContext2D;
   private width!: number;
   private height!: number;
+  private scaleX!: number;
+  private scaleY!: number;
 
   private theme: DrawTheme = {
     bgColor: '#ffffff',
@@ -39,19 +41,7 @@ export class Space {
   }
 
   start(): void {
-    const ctx = this.canvasEl.getContext('2d');
-    if (!ctx) throw new Error('Cannot draw!');
-
-    this.ctx = ctx;
-
-    this.canvasEl.width = 0;
-    this.canvasEl.height = 0;
-
-    this.width = this.canvasEl.clientWidth;
-    this.height = this.canvasEl.clientHeight;
-    // adjust canvas size
-    this.canvasEl.width = this.width;
-    this.canvasEl.height = this.height;
+    this.prepareDrawing();
 
     this.state = 'started';
 
@@ -65,6 +55,26 @@ export class Space {
 
   stop(): void {
     this.state = 'stopped';
+  }
+
+  private prepareDrawing() {
+    const ctx = this.canvasEl.getContext('2d');
+    if (!ctx) throw new Error('Cannot draw!');
+
+    this.ctx = ctx;
+
+    this.canvasEl.width = 0;
+    this.canvasEl.height = 0;
+
+    this.width = this.canvasEl.clientWidth;
+    this.height = this.canvasEl.clientHeight;
+
+    this.scaleX = this.width / this.metersX;
+    this.scaleY = this.height / this.metersY;
+
+    // adjust canvas size
+    this.canvasEl.width = this.width;
+    this.canvasEl.height = this.height;
   }
 
   private requestTick(): void {
@@ -120,7 +130,7 @@ export class Space {
       obj.draw({
         getObjPosition: getPosition.bind(null, this.objPositions),
         ctx: this.ctx,
-        scale: { x: this.width / this.metersX, y: this.height / this.metersY },
+        scale: { x: this.scaleX, y: this.scaleY },
         theme: this.theme,
       })
     );

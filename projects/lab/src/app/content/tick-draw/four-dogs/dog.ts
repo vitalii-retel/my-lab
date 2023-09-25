@@ -6,7 +6,7 @@ import {
 } from 'tick-draw';
 
 export class Dog extends Obj {
-  private followDog: Dog = this;
+  private followDog!: Dog;
   private l = 0;
 
   constructor(

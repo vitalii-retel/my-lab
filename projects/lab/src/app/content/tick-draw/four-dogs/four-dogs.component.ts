@@ -11,14 +11,14 @@ import { Space } from 'tick-draw';
 import { Dog } from './dog';
 
 @Component({
-  selector: 'lab-tick-draw',
+  selector: 'lab-four-dogs',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './tick-draw.component.html',
-  styleUrls: ['./tick-draw.component.scss'],
+  templateUrl: './four-dogs.component.html',
+  styleUrls: ['./four-dogs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TickDrawComponent implements OnDestroy {
+export class FourDogsComponent implements OnDestroy {
   @ViewChild('canvas', { read: ElementRef })
   private canvasEl!: ElementRef<HTMLCanvasElement>;
 

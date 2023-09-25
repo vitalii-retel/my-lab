@@ -3,7 +3,27 @@
   padding: 0.5em 1em;
   background-color: var(--bg-menu);
 
-  a[href].active {
-    color: var(--c-link-active);
+  a[href] {
+    margin-bottom: 0.5em;
+    display: block;
+    color: var(--c-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &.active {
+      color: var(--c-link-active);
+
+      + .submenu {
+        display: block;
+      }
+    }
+  }
+
+  .submenu {
+    display: none;
+    padding-left: 1em;
   }
 }

@@ -3,11 +3,3 @@
 body {
   margin: 0;
 }
-
-a[href] {
-  color: var(--c-link);
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-}
