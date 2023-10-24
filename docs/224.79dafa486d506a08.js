@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklab=self.webpackChunklab||[]).push([[224],{224:(s,o,t)=>{t.r(o),t.d(o,{ROUTES:()=>d});const d=[{path:"4-dogs",title:"4 dogs",loadComponent:()=>t.e(213).then(t.bind(t,213)).then(n=>n.FourDogsComponent)},{path:"",pathMatch:"prefix",redirectTo:"4-dogs"},{path:"**",redirectTo:"4-dogs"}]}}]);
