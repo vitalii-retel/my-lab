@@ -22,6 +22,9 @@
     "paths": {
       "tick-draw": [
         "dist/tick-draw"
+      ],
+      "ui": [
+        "dist/ui"
       ]
     },
     "lib": [

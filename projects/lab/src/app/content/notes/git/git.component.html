@@ -1,0 +1,37 @@
+<ui-title>Git notes</ui-title>
+
+<ui-heading>Getting main branch into feature branch</ui-heading>
+<ui-paragraph>Merge</ui-paragraph>
+<ui-code>
+  git checkout feature/branch<br />
+  git merge main
+</ui-code>
+<ui-paragraph>
+  It creates a new commit with changes from <i>main</i> branch. Safe but merging
+  commit may look unnecessarily.
+  <a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing">
+    More info
+  </a>
+  <br /><br />
+</ui-paragraph>
+<ui-paragraph>Rebase</ui-paragraph>
+<ui-code>
+  git checkout feature/branch<br />
+  git rebase main
+</ui-code>
+<ui-paragraph>
+  It removes <i>feature/branch</i> commits, pulls changes from
+  <i>main</i> branch and then recreates <i>feature/branch</i> commits. So
+  <i>feature/branch</i> commits are always in the end of the branch. Since it
+  recreates commits this approach should be used with local private branches
+  only. If feature branch is pushed already - use merge instead.
+  <a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing">
+    More info
+  </a>
+  <br /><br />
+</ui-paragraph>
+<ui-paragraph>Conclusion</ui-paragraph>
+<ui-paragraph>
+  It looks safer to use <b>merge</b> all the time. Otherwise before using rebase
+  it should always be checked if the branch is not pushed yet.
+</ui-paragraph>

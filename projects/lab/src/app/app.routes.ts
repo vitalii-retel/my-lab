@@ -17,10 +17,14 @@ export const ROUTES: Routes = [
       import('./content/tick-draw/routes').then((mod) => mod.ROUTES),
   },
   {
+    path: 'notes',
+    title: 'Notes',
+    loadChildren: () =>
+      import('./content/notes/routes').then((mod) => mod.ROUTES),
+  },
+  {
     path: '**',
-    loadComponent: () =>
-      import('./content/welcome/welcome.component').then(
-        (mod) => mod.WelcomeComponent
-      ),
+    redirectTo: '',
+    // TODO implement not found page
   },
 ];

@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build-libraries": "ng build tick-draw",
+    "build-libraries": "ng build tick-draw & ng build ui",
     "build": "ng build lab",
     "watch": "ng build lab --watch --configuration development",
     "test": "ng test"
