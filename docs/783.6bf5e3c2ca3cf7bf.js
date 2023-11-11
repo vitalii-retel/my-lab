@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklab=self.webpackChunklab||[]).push([[783],{9783:(d,n,t)=>{t.r(n),t.d(n,{ROUTES:()=>h});const h=[{path:"",pathMatch:"prefix",redirectTo:"git"},{path:"git",title:"Git notes",loadComponent:()=>t.e(706).then(t.bind(t,6706)).then(o=>o.GitComponent)},{path:"**",redirectTo:"git"}]}}]);
