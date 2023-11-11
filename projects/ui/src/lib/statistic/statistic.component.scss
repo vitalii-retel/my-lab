@@ -1,0 +1,11 @@
+:host {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5em 1em;
+  font-size: 0.75em;
+
+  .title {
+    grid-column: 1/-1;
+    font-size: 1.167em;
+  }
+}

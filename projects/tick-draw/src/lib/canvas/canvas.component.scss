@@ -1,0 +1,30 @@
+:host {
+  display: grid;
+  gap: 0.25em;
+  grid-template-columns: max-content max-content;
+  grid-template-rows: auto max-content;
+  justify-items: end;
+
+  canvas {
+    display: block;
+    height: 100%;
+    aspect-ratio: 1/1;
+    box-shadow: var(--shadow);
+    background-color: var(--bg-main);
+    color: var(--c-main);
+
+    /* hacky way to prevent vertical browser scrollbar */
+    margin-top: -0.063em;
+  }
+
+  .start,
+  .x-end,
+  .y-end {
+    font-size: 0.75em;
+  }
+
+  .right-space {
+    grid-row: 1 / -1;
+    grid-column: 3 / -1;
+  }
+}

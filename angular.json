@@ -111,6 +111,20 @@
     },
     "tick-draw": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "standalone": true,
+          "skipTests": true,
+          "changeDetection": "OnPush"
+        },
+        "@schematics/angular:directive": {
+          "standalone": true
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true
+        }
+      },
       "root": "projects/tick-draw",
       "sourceRoot": "projects/tick-draw/src",
       "prefix": "tick",

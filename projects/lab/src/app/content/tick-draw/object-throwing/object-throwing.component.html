@@ -1,0 +1,54 @@
+<div class="control-panel">
+  <div class="buttons">
+    <button type="button" (click)="reset()">Reset</button>
+    <button *ngIf="!(started$ | async)" type="button" (click)="start()">
+      Start
+    </button>
+    <button *ngIf="started$ | async" type="button" (click)="stop()">
+      Stop
+    </button>
+  </div>
+
+  <ng-container *ngIf="statistic$ | async as statistic">
+    <ui-statistic>
+      <ng-container title>Space</ng-container>
+
+      <ui-statistic-line *ngIf="statistic.space.hasOwnProperty('on')">
+        <ng-container label>State</ng-container>
+        <ng-container value>{{
+          statistic.space.on ? "on" : "off"
+        }}</ng-container>
+      </ui-statistic-line>
+      <ui-statistic-line *ngIf="statistic.space.hasOwnProperty('time')">
+        <ng-container label>Time</ng-container>
+        <ng-container value
+          >{{ statistic.space.time | number : "1.3-3" }} s</ng-container
+        >
+      </ui-statistic-line>
+      <ui-statistic-line *ngIf="statistic.space.hasOwnProperty('timeSpeed')">
+        <ng-container label>Time speed</ng-container>
+        <ng-container value>
+          {{ (statistic.space.timeSpeed ?? 0) * 100 | number : "1.1-1" }} %
+        </ng-container>
+      </ui-statistic-line>
+    </ui-statistic>
+
+    <ui-statistic>
+      <ng-container title>Ball</ng-container>
+      <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('speed')">
+        <ng-container label>Speed</ng-container>
+        <ng-container value>
+          {{ statistic.ball.speed | number : "1.2-2" }} m/s
+        </ng-container>
+      </ui-statistic-line>
+      <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('altitude')">
+        <ng-container label>Altitude</ng-container>
+        <ng-container value>
+          {{ statistic.ball.altitude | number : "1.1-1" }} m
+        </ng-container>
+      </ui-statistic-line>
+    </ui-statistic>
+  </ng-container>
+</div>
+
+<tick-canvas [sizeX]="2000" [sizeY]="1500"></tick-canvas>

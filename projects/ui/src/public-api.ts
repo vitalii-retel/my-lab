@@ -5,5 +5,7 @@
 export * from './lib/code/code.component';
 export * from './lib/heading/heading.component';
 export * from './lib/paragraph/paragraph.component';
+export * from './lib/statistic/statistic.component';
+export * from './lib/statistic-line/statistic-line.component';
 export * from './lib/task/task.component';
 export * from './lib/title/title.component';

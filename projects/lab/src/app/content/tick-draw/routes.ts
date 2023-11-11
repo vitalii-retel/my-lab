@@ -10,6 +10,14 @@ export const ROUTES: Routes = [
       ),
   },
   {
+    path: 'object-throwing',
+    title: 'Object throwing',
+    loadComponent: () =>
+      import('./object-throwing/object-throwing.component').then(
+        (mod) => mod.ObjectThrowingComponent
+      ),
+  },
+  {
     path: '',
     pathMatch: 'prefix',
     redirectTo: '4-dogs',

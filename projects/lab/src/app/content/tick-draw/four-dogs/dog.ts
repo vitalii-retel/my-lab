@@ -2,24 +2,34 @@ import {
   Obj,
   ObjCalculateNextPositionParameters,
   ObjDrawParameters,
+  ObjStopCheckParameters,
   Position,
+  Statistic,
 } from 'tick-draw';
 
-export class Dog extends Obj {
+export class Dog implements Obj {
   private followDog!: Dog;
-  private l = 0;
 
-  constructor(
-    private num: number,
-    private statisticFn: (statistic: { l: number }) => void = () => {}
-  ) {
-    super();
+  #statistic = new Statistic<{ l: number }>();
+
+  get statistic() {
+    return this.#statistic.items;
+  }
+
+  constructor(private num: number) {}
+
+  shouldStop({ getObjPosition }: ObjStopCheckParameters): boolean {
+    const me = getObjPosition(this);
+    const follow = getObjPosition(this.followDog);
+    return (
+      Math.sqrt(Math.pow(me.x - follow.x, 2) + Math.pow(me.y - follow.y, 2)) <
+      0.2
+    );
   }
 
   calculateNextPosition({
     getObjPosition,
     ticksInterval: t,
-    stop,
   }: ObjCalculateNextPositionParameters): Position {
     const currentPosition = getObjPosition(this);
     const followPosition = getObjPosition(this.followDog);
@@ -36,33 +46,43 @@ export class Dog extends Obj {
       y: currentPosition.y + ((followPosition.y - currentPosition.y) / tl) * t,
     };
 
-    this.l += Math.sqrt(
-      Math.pow(nextP.x - currentPosition.x, 2) +
-        Math.pow(nextP.y - currentPosition.y, 2)
+    this.#statistic.add(
+      'l',
+      (prev) =>
+        (prev ?? 0) +
+        Math.sqrt(
+          Math.pow(nextP.x - currentPosition.x, 2) +
+            Math.pow(nextP.y - currentPosition.y, 2)
+        )
     );
-
-    if (l < 2 * v * t) stop();
 
     return nextP;
   }
 
-  draw({ getObjPosition, theme, ctx, scale }: ObjDrawParameters): void {
+  draw({
+    ctx,
+    cx,
+    cy,
+    cd,
+    cdx,
+    cdy,
+    getObjPosition,
+    theme,
+  }: ObjDrawParameters): void {
     const { x, y } = getObjPosition(this);
     ctx.beginPath();
     ctx.strokeStyle = theme.color;
     ctx.lineWidth = 1;
-    ctx.arc(x * scale.x, y * scale.y, 0.1 * scale.x, 0, Math.PI * 2);
+    ctx.arc(cx(x), cy(y), cd(0.1, 10), 0, Math.PI * 2);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.font = `${Math.round(0.16 * scale.y)}px sans-serif`;
+    ctx.font = `${cd(0.14, 14)}px sans-serif`;
     ctx.strokeText(
       String(this.num),
-      (x - 0.045) * scale.x,
-      (y + 0.06) * scale.y
+      cx(x) - cdx(0.04, 4),
+      cy(y) - cdy(0.05, 5)
     );
-
-    this.statisticFn({ l: this.l });
   }
 
   follow(dog: Dog): void {
