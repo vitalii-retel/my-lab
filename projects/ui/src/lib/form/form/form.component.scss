@@ -1,0 +1,10 @@
+:host {
+  display: grid;
+  row-gap: 0.5em;
+  font-size: 0.75em;
+
+  .title {
+    grid-column: 1/-1;
+    font-size: 1.167em;
+  }
+}

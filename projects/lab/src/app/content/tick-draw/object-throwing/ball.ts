@@ -8,27 +8,40 @@ import {
 } from 'tick-draw';
 
 export class Ball implements Obj {
-  #v = 0;
-  #statistic = new Statistic<{ speed: number; altitude: number }>();
+  #vx = 0;
+  #vy = 0;
+  #statistic = new Statistic<{
+    speedX: number;
+    speedY: number;
+    altitude: number;
+  }>();
 
   get statistic() {
     return this.#statistic.items;
   }
 
+  constructor({ vx, vy }: { vx: number; vy: number }) {
+    this.#vx = vx;
+    this.#vy = vy;
+    this.#statistic.add('speedX', this.#vx);
+    this.#statistic.add('speedY', this.#vy);
+  }
+
   shouldStop({ getObjPosition }: ObjStopCheckParameters): boolean {
-    return getObjPosition(this).y <= 0;
+    return getObjPosition(this).y < 0;
   }
 
   calculateNextPosition({
     ticksInterval,
     getObjPosition,
   }: ObjCalculateNextPositionParameters): Position {
-    this.#v += ticksInterval * 9.8;
+    this.#vy -= ticksInterval * 9.8;
     const r = {
-      x: getObjPosition(this).x,
-      y: getObjPosition(this).y - ticksInterval * this.#v,
+      x: getObjPosition(this).x + ticksInterval * this.#vx,
+      y: getObjPosition(this).y + ticksInterval * this.#vy,
     };
-    this.#statistic.add('speed', this.#v);
+    this.#statistic.add('speedX', this.#vx);
+    this.#statistic.add('speedY', this.#vy);
     this.#statistic.add('altitude', r.y);
 
     return r;

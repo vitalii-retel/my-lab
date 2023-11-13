@@ -11,7 +11,20 @@ import { CanvasComponent, statisticObservable } from 'tick-draw';
 import { Space } from 'projects/tick-draw/src/public-api';
 import { Ball } from './ball';
 import { map } from 'rxjs';
-import { StatisticComponent, StatisticLineComponent } from 'ui';
+import {
+  ControlComponent,
+  FormComponent,
+  InputComponent,
+  LabelComponent,
+  StatisticComponent,
+  StatisticLineComponent,
+} from 'ui';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'lab-object-throwing',
@@ -21,6 +34,11 @@ import { StatisticComponent, StatisticLineComponent } from 'ui';
     CanvasComponent,
     StatisticComponent,
     StatisticLineComponent,
+    FormComponent,
+    ControlComponent,
+    LabelComponent,
+    InputComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './object-throwing.component.html',
   styleUrls: ['./object-throwing.component.scss'],
@@ -40,15 +58,51 @@ export class ObjectThrowingComponent implements AfterViewInit, OnDestroy {
 
   started$ = this.statistic$.pipe(map((s) => s.space.on));
 
+  form = new FormGroup({
+    angle: new FormControl(60, {
+      validators: [Validators.min(0), Validators.max(90), Validators.required],
+      nonNullable: true,
+    }),
+    mass: new FormControl(0.2, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
+    energy: new FormControl(2000, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
+    sizeX: new FormControl(2000, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
+    sizeY: new FormControl(1500, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
+  });
+
+  sizeX: number = this.form.getRawValue().sizeX;
+  sizeY: number = this.form.getRawValue().sizeY;
+
   constructor(private cdr: ChangeDetectorRef) {}
 
   reset(): void {
     this.#spaceDispose();
 
-    this.#space = new Space(0.005);
-    this.#ball = new Ball();
+    const { mass: m, energy: e, angle, sizeX, sizeY } = this.form.getRawValue();
 
-    this.#space.addObject(this.#ball, { x: 100, y: 1500 });
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
+
+    this.#space = new Space(0.005);
+
+    const v = Math.sqrt((e * 2) / m);
+    this.#ball = new Ball({
+      vx: v * Math.cos((angle * Math.PI) / 180),
+      vy: v * Math.sin((angle * Math.PI) / 180),
+    });
+
+    this.#space.addObject(this.#ball, { x: 0, y: 0 });
 
     this.#space.setCanvas(this.canvasComponent);
   }

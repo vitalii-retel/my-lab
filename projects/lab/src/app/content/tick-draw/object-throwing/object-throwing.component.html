@@ -1,6 +1,30 @@
 <div class="control-panel">
+  <ui-form [formGroup]="form">
+    <ng-container title>Parameters</ng-container>
+    <ui-control>
+      <ui-label>Angle to horizon</ui-label>
+      <input ui-input type="number" formControlName="angle" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Mass, kg</ui-label>
+      <input ui-input type="number" formControlName="mass" step="0.1" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Energy, J</ui-label>
+      <input ui-input type="number" formControlName="energy" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Size horizontal, m</ui-label>
+      <input ui-input type="number" formControlName="sizeX" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Size vertical, m</ui-label>
+      <input ui-input type="number" formControlName="sizeY" />
+    </ui-control>
+  </ui-form>
+
   <div class="buttons">
-    <button type="button" (click)="reset()">Reset</button>
+    <button type="button" (click)="reset()">Set / Reset</button>
     <button *ngIf="!(started$ | async)" type="button" (click)="start()">
       Start
     </button>
@@ -35,10 +59,16 @@
 
     <ui-statistic>
       <ng-container title>Ball</ng-container>
-      <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('speed')">
-        <ng-container label>Speed</ng-container>
+      <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('speedX')">
+        <ng-container label>Speed horizontal</ng-container>
         <ng-container value>
-          {{ statistic.ball.speed | number : "1.2-2" }} m/s
+          {{ statistic.ball.speedX | number : "1.2-2" }} m/s
+        </ng-container>
+      </ui-statistic-line>
+      <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('speedY')">
+        <ng-container label>Speed vertical</ng-container>
+        <ng-container value>
+          {{ statistic.ball.speedY | number : "1.2-2" }} m/s
         </ng-container>
       </ui-statistic-line>
       <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('altitude')">
@@ -51,4 +81,4 @@
   </ng-container>
 </div>
 
-<tick-canvas [sizeX]="2000" [sizeY]="1500"></tick-canvas>
+<tick-canvas [sizeX]="sizeX" [sizeY]="sizeY"></tick-canvas>
