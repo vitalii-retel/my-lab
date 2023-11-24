@@ -2,7 +2,7 @@
   <ui-form [formGroup]="form">
     <ng-container title>Parameters</ng-container>
     <ui-control>
-      <ui-label>Angle to horizon</ui-label>
+      <ui-label>Angle to horizon, degrees</ui-label>
       <input ui-input type="number" formControlName="angle" />
     </ui-control>
     <ui-control>
@@ -12,6 +12,27 @@
     <ui-control>
       <ui-label>Energy, J</ui-label>
       <input ui-input type="number" formControlName="energy" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Air drag</ui-label>
+      <input ui-input type="checkbox" formControlName="airDrag" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Ballistic coefficient C</ui-label>
+      <input
+        ui-input
+        type="number"
+        formControlName="objectBallisticC"
+        step="0.01"
+      />
+    </ui-control>
+    <ui-control>
+      <ui-label>Front area, cm<sup>2</sup></ui-label>
+      <input ui-input type="number" formControlName="frontArea" step="0.01" />
+    </ui-control>
+    <ui-control>
+      <ui-label>Air density, kg/m<sup>3</sup></ui-label>
+      <input ui-input type="number" formControlName="airDensity" step="0.001" />
     </ui-control>
     <ui-control>
       <ui-label>Size horizontal, m</ui-label>
@@ -75,6 +96,12 @@
         <ng-container label>Altitude</ng-container>
         <ng-container value>
           {{ statistic.ball.altitude | number : "1.1-1" }} m
+        </ng-container>
+      </ui-statistic-line>
+      <ui-statistic-line *ngIf="statistic.ball.hasOwnProperty('x')">
+        <ng-container label>Distance</ng-container>
+        <ng-container value>
+          {{ statistic.ball.x | number : "1.1-1" }} m
         </ng-container>
       </ui-statistic-line>
     </ui-statistic>

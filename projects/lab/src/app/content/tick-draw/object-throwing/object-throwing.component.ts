@@ -67,6 +67,21 @@ export class ObjectThrowingComponent implements AfterViewInit, OnDestroy {
       validators: [Validators.min(0), Validators.required],
       nonNullable: true,
     }),
+    airDrag: new FormControl(true, {
+      nonNullable: true,
+    }),
+    objectBallisticC: new FormControl(2, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
+    frontArea: new FormControl(4, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
+    airDensity: new FormControl(1.225, {
+      validators: [Validators.min(0), Validators.required],
+      nonNullable: true,
+    }),
     energy: new FormControl(2000, {
       validators: [Validators.min(0), Validators.required],
       nonNullable: true,
@@ -89,17 +104,32 @@ export class ObjectThrowingComponent implements AfterViewInit, OnDestroy {
   reset(): void {
     this.#spaceDispose();
 
-    const { mass: m, energy: e, angle, sizeX, sizeY } = this.form.getRawValue();
+    const {
+      mass,
+      energy: e,
+      angle,
+      sizeX,
+      sizeY,
+      airDensity,
+      objectBallisticC: c,
+      frontArea,
+      airDrag,
+    } = this.form.getRawValue();
 
     this.sizeX = sizeX;
     this.sizeY = sizeY;
 
     this.#space = new Space(0.005);
 
-    const v = Math.sqrt((e * 2) / m);
+    const v = Math.sqrt((e * 2) / mass);
     this.#ball = new Ball({
       vx: v * Math.cos((angle * Math.PI) / 180),
       vy: v * Math.sin((angle * Math.PI) / 180),
+      airDensity: airDensity,
+      c: c,
+      frontArea: frontArea / 10000,
+      mass: mass,
+      airDrag: airDrag,
     });
 
     this.#space.addObject(this.#ball, { x: 0, y: 0 });
